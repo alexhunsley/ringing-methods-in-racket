@@ -7,14 +7,15 @@
     ;; possible finish condition, and catches 'badly formed' PN with implicit places, e.g. '1' on even stages
     [(= startIndex (string-length startRow)) (substring startRow (- startIndex 1) startIndex)]
     [else
-     ;; if this place in row has a 'make place' in the PN:
+     ;; does this place in row have a 'make place' in the PN?
      (if (string-contains? inputPn (number->string startIndex))
+         ;; yes, so make a place
          (string-append
           ;; the number at that pos in the row
           (substring startRow (- startIndex 1) startIndex)
           ;; append recursive application of this function
           (pn startRow (+ startIndex 1) inputPn))
-         ;; swap the first two items in string
+         ;; no, so swap the first two items in string
          (string-append
           (string-append
            (substring startRow startIndex (+ startIndex 1))
