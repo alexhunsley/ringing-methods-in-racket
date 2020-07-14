@@ -1,17 +1,5 @@
 #lang racket
 
-(define (remove-dups l)
-  (cond
-   [(empty? l) empty]
-   [(empty? (rest l)) l]
-   [else
-    (let ([i (first l)])
-      (if (equal? i (first (rest l)))
-          (remove-dups (rest l))
-          (cons i (remove-dups (rest l)))))]))
-
-(remove-dups (list "a" "b" "b" "b" "c" "c"))
-
 (define (pn startRow startIndex inputPn)
   (cond
     ;; finishing condition
@@ -36,8 +24,7 @@
     )
   )
 
-#;(pn "1234" "" 0 "14")
-
-#;(pn "1234" "a" 4 "14")
-
-(pn "123456" 1 "14")
+(pn "12345678" 1 "1")
+(pn "12345678" 1 "12")
+(pn "12345678" 1 "34")
+(pn "12345678" 1 "1478")
