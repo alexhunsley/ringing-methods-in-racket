@@ -1,6 +1,6 @@
 #lang racket
 
-(define (pn startRow startIndex inputPn)
+(define (pn startIndex inputPn startRow)
   (cond
     ;; finishing condition
     [(> startIndex (string-length startRow)) ""]
@@ -14,18 +14,18 @@
           ;; the number at that pos in the row
           (substring startRow (- startIndex 1) startIndex)
           ;; append recursive application of this function
-          (pn startRow (+ startIndex 1) inputPn))
+          (pn (+ startIndex 1) inputPn startRow))
          ;; no, so swap the first two items in string
          (string-append
           (string-append
            (substring startRow startIndex (+ startIndex 1))
            (substring startRow (- startIndex 1) startIndex))
-          (pn startRow (+ startIndex 2) inputPn))
+          (pn (+ startIndex 2) inputPn startRow))
      )]
     )
   )
 
-(pn "12345678" 1 "1")
-(pn "12345678" 1 "12")
-(pn "12345678" 1 "34")
-(pn "12345678" 1 "1478")
+(pn 1 "1" "12345678")
+(pn 1 "12" "12345678")
+(pn 1 "34" "12345678")
+(pn 1 "1478" "12345678")
