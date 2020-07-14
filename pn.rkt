@@ -14,7 +14,10 @@
 
 (define (pn startRow res startIndex inputPn)
   (cond
-    [(> startIndex (string-length startRow)) "E"]
+    ;; finishing condition
+    #;[(> startIndex (string-length startRow)) "E"]
+    ;; catches 'badly formed' PN with implicit places, e.g. '1' on even stages
+    [(= startIndex (string-length startRow)) (substring startRow (- startIndex 1) startIndex)]
     [else
      ;; if this place in row has a 'make place' in the PN:
      (if (string-contains? inputPn (number->string startIndex))
@@ -37,4 +40,4 @@
 
 #;(pn "1234" "a" 4 "14")
 
-(pn "1234" "a" 1 "14")
+(pn "1234" "a" 1 "1")
