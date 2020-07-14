@@ -32,3 +32,32 @@
 (pn "12" "12345678")
 (pn "34" "12345678")
 (pn "1478" "12345678")
+(pn "8" "12345678")
+(pn "x" "12345678")
+(pn "x" "1234567")
+
+(curry pn "14")
+
+(define method '("x" "14" "x" "14" "x" "14" "x" "12"))
+method
+
+;;(define testos (map (lambda (x) (string-append x "P")) method))
+;;testos
+
+
+(define methodFuncs (map (lambda (x) (curry pn x)) method))
+methodFuncs
+
+((list-ref methodFuncs 0) "1234")
+
+
+(define twoPNs (compose (list-ref methodFuncs 1) (list-ref methodFuncs 0)))
+(twoPNs "1234")
+
+
+;;(define comptestall (compose methodFuncs))
+
+(define singleLead (apply compose (reverse methodFuncs)))
+ 
+(singleLead "1234")
+
