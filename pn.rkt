@@ -1,6 +1,6 @@
 #lang racket
 
-(define (pn inputPn startRow)
+(define (pn inputPn prevRows startRow)
   (define (pn startIndex inputPn startRow)
     (cond
       ;; finishing condition
@@ -25,16 +25,20 @@
            )]
       )
     )
-  (pn 1 inputPn startRow)
+  (define resultRow (pn 1 inputPn startRow))
+  (list resultRow (append prevRows (list resultRow)))
+  ;;'()
 )
 
-(pn "1" "12345678")
-(pn "12" "12345678")
-(pn "34" "12345678")
-(pn "1478" "12345678")
-(pn "8" "12345678")
-(pn "x" "12345678")
-(pn "x" "1234567")
+
+(pn "14" '("12345678") "12345678")
+
+;;(pn "12" "12345678")
+;;(pn "34" "12345678")
+;;(pn "1478" "12345678")
+;;(pn "8" "12345678")
+;;(pn "x" "12345678")
+;;(pn "x" "1234567")
 
 (curry pn "14")
 
