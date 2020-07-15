@@ -1,7 +1,8 @@
 #lang racket
+(require racket/pretty)
 
-(define (pn inputPn prevRows startRow)
-  (define (pn startIndex inputPn startRow)
+(define (pn inputPn startRow prevRows)
+  (define (innerPn startIndex inputPn startRow)
     (cond
       ;; finishing condition
       [(> startIndex (string-length startRow)) ""]
@@ -15,23 +16,28 @@
             ;; the number at that pos in the row
             (substring startRow (- startIndex 1) startIndex)
             ;; append recursive application of this function
-            (pn (+ startIndex 1) inputPn startRow))
+            (innerPn (+ startIndex 1) inputPn startRow))
            ;; no, so swap the first two items in string
            (string-append
             (string-append
              (substring startRow startIndex (+ startIndex 1))
              (substring startRow (- startIndex 1) startIndex))
-            (pn (+ startIndex 2) inputPn startRow))
+            (innerPn (+ startIndex 2) inputPn startRow))
            )]
       )
     )
-  (define resultRow (pn 1 inputPn startRow))
-  (list resultRow (append prevRows (list resultRow)))
-  ;;'()
+  (define resultRow (innerPn 1 inputPn startRow))
+  ;; use 'values' to return muliple values!
+  ;; if we use 'list', it breaks the composition
+  (values resultRow (append prevRows (list resultRow)))
 )
 
+;;(define (pnFinal inputPn startRow prevRows)
+;;  (define result (pn inputPn startRow prevRows))
+;;  (list-ref result 1)
+;;  )
 
-(pn "14" '("12345678") "12345678")
+;;(pn "14" '("12345678") "12345678")
 
 ;;(pn "12" "12345678")
 ;;(pn "34" "12345678")
@@ -40,28 +46,60 @@
 ;;(pn "x" "12345678")
 ;;(pn "x" "1234567")
 
-(curry pn "14")
+;;(curry pn "14")
 
 (define method '("x" "14" "x" "14" "x" "14" "x" "12"))
-method
+;;method
+
+;;(define methodFuncs (map (lambda (notate) (curry pn notate)) method))
+(define methodFuncs (map (lambda (notate) (curry pn notate)) method))
+
+;;methodFuncs
+
+(define singleLead (apply compose (reverse methodFuncs)))
+
+;;(singleLead "1234" '("1234"))
+
+;;(define (get-second-item item-one item-two)
+;;  (values item-two)
+;;  )
+
+(define (get-second-item items)
+  (list-ref 1 items)
+  )
+
+;;(define (get-second-item items)
+;;  (list-ref 1 items)
+;;  )
+
+
+(define (apply-n-leads n single-lead-func)
+  (apply compose (make-list n single-lead-func))
+;;  (apply compose get-second-item (make-list n single-lead-func))
+  )
+
+  
+;;(define wholeMethod (apply compose (make-list 3 singleLead)))
+;; or can use compose:
+;;((compose singleLead singleLead singleLead) "1234" '("1234")) 
+
+;;(define wholeMethod (apply-n-leads 3 singleLead))
+;;(wholeMethod  "1234" '("1234"))
+
+;; or run directly, like:
+
+((apply-n-leads 3 singleLead) "1234" '("1234"))
+
+;;(get-second-item "s" "g")
+
+;;(get-second-item ((apply-n-leads 3 singleLead) "1234" '("1234")))
+
+
+;;;;;;;;;;;;;;;; chaff
 
 ;;(define testos (map (lambda (x) (string-append x "P")) method))
 ;;testos
 
 
-(define methodFuncs (map (lambda (x) (curry pn x)) method))
-methodFuncs
-
-((list-ref methodFuncs 0) "1234")
-
-
-(define twoPNs (compose (list-ref methodFuncs 1) (list-ref methodFuncs 0)))
-(twoPNs "1234")
-
-
-;;(define comptestall (compose methodFuncs))
-
-(define singleLead (apply compose (reverse methodFuncs)))
- 
-(singleLead "1234")
-
+;;(define twoPNs (compose (list-ref methodFuncs 1) (list-ref methodFuncs 0)))
+;;(twoPNs "1234")
