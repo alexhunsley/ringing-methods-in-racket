@@ -1,5 +1,6 @@
 #lang racket
-
+(require br/debug)
+(require memoize)
 
 (define (pn inputPn startRow prevRows)
   (define (innerPn startIndex inputPn startRow)
@@ -41,12 +42,15 @@
 ;; (Note: we will have duplicates here - no caching/memoization)
 (define methodFuncs (map (lambda (notate) (curry pn notate)) method))
 
+(define/memo (rev-compose funcs) 
+  (apply compose (reverse methodFuncs)))
+
 ;; Composition of the notate functions that applies
 ;; a single lead of the method
-(define singleLead (apply compose (reverse methodFuncs)))
+(define singleLead (rev-compose methodFuncs))
 
 ;; Composition of the single lead function to do multiple leads
-(define (apply-n-leads n single-lead-func)
+(define/memo (apply-n-leads n single-lead-func)
   (apply compose (make-list n single-lead-func))
 ;;  (apply compose get-second-item (make-list n single-lead-func))
   )
@@ -57,9 +61,9 @@
 
 ;;(singleLead "1234" '("1234"))
 
-(define (get-second-item items)
-  (list-ref 1 items)
-  )
+;;(define (get-second-item items)
+;;  (list-ref 1 items)
+;;  )
   
 ;;(define wholeMethod (apply compose (make-list 3 singleLead)))
 ;; or can use compose:
