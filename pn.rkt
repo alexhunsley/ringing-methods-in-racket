@@ -1,5 +1,5 @@
 #lang racket
-(require racket/pretty)
+
 
 (define (pn inputPn startRow prevRows)
   (define (innerPn startIndex inputPn startRow)
@@ -26,11 +26,66 @@
            )]
       )
     )
+
   (define resultRow (innerPn 1 inputPn startRow))
-  ;; use 'values' to return muliple values!
-  ;; if we use 'list', it breaks the composition
+
+  ;; Use 'values' to return muliple values!
+  ;; if we use 'list', it breaks 'composition' call
   (values resultRow (append prevRows (list resultRow)))
 )
+
+;; Our place notation (PB Minimus)
+(define method '("x" "14" "x" "14" "x" "14" "x" "12"))
+
+;; List of functions that apply each place notate
+;; (Note: we will have duplicates here - no caching/memoization)
+(define methodFuncs (map (lambda (notate) (curry pn notate)) method))
+
+;; Composition of the notate functions that applies
+;; a single lead of the method
+(define singleLead (apply compose (reverse methodFuncs)))
+
+;; Composition of the single lead function to do multiple leads
+(define (apply-n-leads n single-lead-func)
+  (apply compose (make-list n single-lead-func))
+;;  (apply compose get-second-item (make-list n single-lead-func))
+  )
+
+;; Generate entire method (3 leads)
+;; (Need to get rid of the repeated '1234' here.)
+((apply-n-leads 3 singleLead) "1234" '("1234"))
+
+;;(singleLead "1234" '("1234"))
+
+(define (get-second-item items)
+  (list-ref 1 items)
+  )
+  
+;;(define wholeMethod (apply compose (make-list 3 singleLead)))
+;; or can use compose:
+;;((compose singleLead singleLead singleLead) "1234" '("1234")) 
+
+;;(define wholeMethod (apply-n-leads 3 singleLead))
+;;(wholeMethod  "1234" '("1234"))
+
+;; or run directly, like:
+
+;;((apply-n-leads 3 singleLead) "1234" '("1234"))
+
+;;(get-second-item "s" "g")
+
+;;(get-second-item ((apply-n-leads 3 singleLead) "1234" '("1234")))
+
+
+;;;;;;;;;;;;;;;; chaff
+
+;;(define testos (map (lambda (x) (string-append x "P")) method))
+;;testos
+
+
+;;(define twoPNs (compose (list-ref methodFuncs 1) (list-ref methodFuncs 0)))
+;;(twoPNs "1234")
+
 
 ;;(define (pnFinal inputPn startRow prevRows)
 ;;  (define result (pn inputPn startRow prevRows))
@@ -48,58 +103,3 @@
 
 ;;(curry pn "14")
 
-(define method '("x" "14" "x" "14" "x" "14" "x" "12"))
-;;method
-
-;;(define methodFuncs (map (lambda (notate) (curry pn notate)) method))
-(define methodFuncs (map (lambda (notate) (curry pn notate)) method))
-
-;;methodFuncs
-
-(define singleLead (apply compose (reverse methodFuncs)))
-
-;;(singleLead "1234" '("1234"))
-
-;;(define (get-second-item item-one item-two)
-;;  (values item-two)
-;;  )
-
-(define (get-second-item items)
-  (list-ref 1 items)
-  )
-
-;;(define (get-second-item items)
-;;  (list-ref 1 items)
-;;  )
-
-
-(define (apply-n-leads n single-lead-func)
-  (apply compose (make-list n single-lead-func))
-;;  (apply compose get-second-item (make-list n single-lead-func))
-  )
-
-  
-;;(define wholeMethod (apply compose (make-list 3 singleLead)))
-;; or can use compose:
-;;((compose singleLead singleLead singleLead) "1234" '("1234")) 
-
-;;(define wholeMethod (apply-n-leads 3 singleLead))
-;;(wholeMethod  "1234" '("1234"))
-
-;; or run directly, like:
-
-((apply-n-leads 3 singleLead) "1234" '("1234"))
-
-;;(get-second-item "s" "g")
-
-;;(get-second-item ((apply-n-leads 3 singleLead) "1234" '("1234")))
-
-
-;;;;;;;;;;;;;;;; chaff
-
-;;(define testos (map (lambda (x) (string-append x "P")) method))
-;;testos
-
-
-;;(define twoPNs (compose (list-ref methodFuncs 1) (list-ref methodFuncs 0)))
-;;(twoPNs "1234")
