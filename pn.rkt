@@ -52,58 +52,21 @@
 ;; Composition of the single lead function to do multiple leads
 (define/memo (apply-n-leads n single-lead-func)
   (apply compose (make-list n single-lead-func))
-;;  (apply compose get-second-item (make-list n single-lead-func))
   )
 
 ;; Generate entire method (3 leads)
 ;; (Need to get rid of the repeated '1234' here.)
-((apply-n-leads 3 singleLead) "1234" '("1234"))
+;;(report ((apply-n-leads 3 singleLead) "1234" '("1234")))
 
-;;(singleLead "1234" '("1234"))
+;;(define first-row-and-rows ((apply-n-leads 3 singleLead) "1234" '("1234")))
 
-;;(define (get-second-item items)
-;;  (list-ref 1 items)
-;;  )
-  
-;;(define wholeMethod (apply compose (make-list 3 singleLead)))
-;; or can use compose:
-;;((compose singleLead singleLead singleLead) "1234" '("1234")) 
+#;(define allRows (let-values ([(resultRow allRows) first-row-and-rows])
+  allRows))
 
-;;(define wholeMethod (apply-n-leads 3 singleLead))
-;;(wholeMethod  "1234" '("1234"))
+;;(list allRows)
 
-;; or run directly, like:
+(let-values ([(resultRow allRows) ((apply-n-leads 3 singleLead) "1234" '("1234")) ])
+  allRows)
+  ;;(list resultRow allRows))resultRow allRows
 
-;;((apply-n-leads 3 singleLead) "1234" '("1234"))
-
-;;(get-second-item "s" "g")
-
-;;(get-second-item ((apply-n-leads 3 singleLead) "1234" '("1234")))
-
-
-;;;;;;;;;;;;;;;; chaff
-
-;;(define testos (map (lambda (x) (string-append x "P")) method))
-;;testos
-
-
-;;(define twoPNs (compose (list-ref methodFuncs 1) (list-ref methodFuncs 0)))
-;;(twoPNs "1234")
-
-
-;;(define (pnFinal inputPn startRow prevRows)
-;;  (define result (pn inputPn startRow prevRows))
-;;  (list-ref result 1)
-;;  )
-
-;;(pn "14" '("12345678") "12345678")
-
-;;(pn "12" "12345678")
-;;(pn "34" "12345678")
-;;(pn "1478" "12345678")
-;;(pn "8" "12345678")
-;;(pn "x" "12345678")
-;;(pn "x" "1234567")
-
-;;(curry pn "14")
-
+;;(let-values ([(x y) (quotient/remainder 10 3)]))
