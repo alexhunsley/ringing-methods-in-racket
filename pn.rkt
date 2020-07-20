@@ -65,8 +65,28 @@
 
 ;;(list allRows)
 
+#;(define (replace lst str rep)
+  (map (lambda (x) (if (string=? x str) rep x)) 
+       lst))
+
+(define (string-replace input-string from-char)
+  (list->string
+   (for/list ((item (string->list input-string)))   
+     (if (equal? item from-char)
+         #\*
+         #\ ))))
+
+(define (outputListData list)
+  (cond 
+    [(null? list) #f]             ; actually doesn't really matter what we return
+    [else (printf "~s\n" (string-replace (first list) #\2))    ; display the first item ...
+          (outputListData (rest list))])) ; and start over with the rest
+
+
 (let-values ([(resultRow allRows) ((apply-n-leads 3 singleLead) "1234" '("1234")) ])
-  allRows)
+  (outputListData allRows))
   ;;(list resultRow allRows))resultRow allRows
+
+
 
 ;;(let-values ([(x y) (quotient/remainder 10 3)]))
