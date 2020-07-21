@@ -32,26 +32,6 @@ Playground for delayed/lazy execution
 (writ2)
 
 
-#|
-(define (writ3)
-  (delay (lambda () writeln "writX"))
-)
-|#
-
-
-#|
-;; can't do this - no expression in begin
-(define (param-promise x)
-  (define writ4
-    (delay
-      (writeln "writ4 being evaluated")
-      (writeln x)
-      "writ4-return-val"
-      )
-    )
-)
-|#
-
 (define writ3
   (delay
     (writeln "writ3 being evaluated")
@@ -72,3 +52,17 @@ Playground for delayed/lazy execution
 ;; note that we can't pass in any parameter
 (force writ3)
 (force writ3)
+
+(writeln "(About to define a delay/strict for writ4)")
+ 
+;; a delay that is immediately evaluated and cached when encountered
+(define writ4
+  (delay/strict
+    (writeln "writ4 being evaluated")
+    "writ4-return-val"
+    )
+  )
+
+(writeln "(About to force writ4)")
+(force writ4)
+
