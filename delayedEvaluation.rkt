@@ -1,5 +1,7 @@
 #lang racket
 
+;; more details at https://docs.racket-lang.org/reference/Delayed_Evaluation.html
+
 (require memoize)
 (require racket/promise)
 
@@ -65,4 +67,3 @@ Playground for delayed/lazy execution
 
 (writeln "(About to force writ4)")
 (force writ4)
-

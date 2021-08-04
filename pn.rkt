@@ -2,6 +2,9 @@
 (require br/debug)
 (require memoize)
 
+;; values versus lists for return -- see https://stackoverflow.com/a/20569593/348476 -
+;; sounds like list is better, use 'match'
+
 (define (pn inputPn startRow prevRows)
   (define (innerPn startIndex inputPn startRow)
     (cond
